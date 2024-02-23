@@ -1,8 +1,14 @@
 {
   "name": "rehype-absolute-urls",
-  "version": "0.0.1",
-  "module": "index.js",
   "type": "module",
+  "version": "0.0.1",
+  "description": "rehype plugin for converting relative URLs to absolute",
+  "author": "Viktor Yakubiv (yakubiv.com)",
+  "license": "MIT",
+  "exports": "./index.js",
+  "files": [
+    "index.js"
+  ],
   "dependencies": {
     "hast-util-has-property": "^3.0.0",
     "unist-util-visit": "^5.0.0"
