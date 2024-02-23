@@ -2,7 +2,7 @@ import { resolve as resolvePath } from 'node:path'
 import { hasProperty as has } from 'hast-util-has-property'
 import { visit } from 'unist-util-visit'
 
-const FAKE_HOST = (Math.random() + 1).toString(36)
+const FAKE_HOST = (Math.random()).toString(36).slice(2) + '.fake'
 const FAKE_ORIGIN = 'https://' + FAKE_HOST
 
 export default (options = {}) => (tree, file) => {
