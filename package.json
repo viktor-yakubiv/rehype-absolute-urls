@@ -1,5 +1,10 @@
 {
   "name": "rehype-absolute-urls",
+  "version": "0.0.1",
   "module": "index.js",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "hast-util-has-property": "^3.0.0",
+    "unist-util-visit": "^5.0.0"
+  }
 }
