@@ -1,0 +1,5 @@
+{
+  "name": "rehype-absolute-urls",
+  "module": "index.js",
+  "type": "module"
+}
