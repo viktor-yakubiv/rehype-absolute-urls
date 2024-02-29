@@ -1,25 +1,28 @@
-import { resolve as resolvePath } from 'node:path'
 import { hasProperty as has } from 'hast-util-has-property'
 import { visit } from 'unist-util-visit'
+import { resolveBase, resolveRelative } from './lib/resolver.js'
 
-const FAKE_HOST = (Math.random()).toString(36).slice(2) + '.fake'
-const FAKE_ORIGIN = 'https://' + FAKE_HOST
+/**
+	* @typedef {Object} Options
+	* @property {string} [sourceRootPath = './']
+	* @property {string} [publicRootPath = '/']
+	*/
 
-export default (options = {}) => (tree, file) => {
-	const sourceRootPath = resolvePath(options.sourceRootPath ?? './')
-	const sourceRootUrl = new URL(`file://${sourceRootPath.replace(/\/$/, '')}`)
+/**
+ * @param {Options} options
+ */
+function attachPlugin(options) {
+	return (tree, file) => transformUrls(tree, file, options)
+}
 
-	const publicRootPath = options.publicRootPath ?? '/'
-	const publicRootUrl = new URL(publicRootPath, FAKE_ORIGIN)
-
-	const localFileUrl = new URL(`file://${resolvePath(file.path)}`)
-	const publicFileUrl = new URL(localFileUrl.toString().replace(new RegExp(`^${sourceRootUrl}/`), publicRootUrl))
-
-	const resolveAbsoluteUrl = (href) => {
-		const url = new URL(href, publicFileUrl)
-		const publicHref = url.href.replace(new RegExp(`^${FAKE_ORIGIN}`), '')
-		return publicHref
-	}
+/**
+ * @param {Root} tree
+ * @param {VFileCompatible} file
+ * @param {Options} options
+ */
+function transformUrls(tree, file, options = {}) {
+	const { sourceRootPath, publicRootPath } = options
+	const baseHref = resolveBase(file.path, sourceRootPath, publicRootPath)
 
 	const modify = (node, prop) => {
 		if (!has(node, prop)) {
@@ -30,13 +33,8 @@ export default (options = {}) => (tree, file) => {
 			return
 		}
 
-		const url = new URL(node.properties[prop], FAKE_ORIGIN)
-		if (url.origin != FAKE_ORIGIN) {
-			return
-		}
-
 		const localHref = node.properties[prop]
-		const publicHref = resolveAbsoluteUrl(localHref)
+		const publicHref = resolveRelative(baseHref, localHref)
 		node.properties[prop] = publicHref
 	}
 
@@ -45,3 +43,5 @@ export default (options = {}) => (tree, file) => {
 		modify(node, 'src')
 	})
 }
+
+export default attachPlugin
