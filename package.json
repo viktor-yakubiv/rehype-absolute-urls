@@ -1,7 +1,7 @@
 {
   "name": "rehype-absolute-urls",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "rehype plugin for converting relative URLs to absolute",
   "author": "Viktor Yakubiv (yakubiv.com)",
   "license": "MIT",
